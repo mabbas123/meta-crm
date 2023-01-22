@@ -13,6 +13,8 @@ use App\Models\User;
 use App\Models\Withdrawal;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,15 +34,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $general = gs();
-        $activeTemplate = activeTemplate();
-        $viewShare['general'] = $general;
-        $viewShare['activeTemplate'] = $activeTemplate;
-        $viewShare['activeTemplateTrue'] = activeTemplate(true);
-        $viewShare['language'] = Language::all();
-        $viewShare['emptyMessage'] = 'Data not found';
-        $viewShare['pages'] = Page::where('tempname',$activeTemplate)->where('is_default', Status::NO)->get();
-        view()->share($viewShare);
+        if (Schema::hasTable('general_settings')) {
+            $general = gs();
+            $activeTemplate = activeTemplate();
+            $viewShare = [];
+            $viewShare['general'] = $general;
+            $viewShare['activeTemplate'] = $activeTemplate;
+            $viewShare['activeTemplateTrue'] = activeTemplate(true);
+            $viewShare['language'] = Language::all();
+            $viewShare['emptyMessage'] = 'Data not found';
+            $viewShare['pages'] = Page::where('tempname', $activeTemplate)->where('is_default', Status::NO)->get();
+            view()->share($viewShare);
+
+            if ($general->force_ssl) {
+                \URL::forceScheme('https');
+            }
+        }
 
 
         view()->composer('admin.partials.sidenav', function ($view) {
@@ -69,10 +78,6 @@ class AppServiceProvider extends ServiceProvider
                 'seo' => $seo ? $seo->data_values : $seo,
             ]);
         });
-
-        if ($general->force_ssl) {
-            \URL::forceScheme('https');
-        }
 
 
         Paginator::useBootstrapFour();
