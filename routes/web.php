@@ -1,7 +1,9 @@
 <?php
 
-
+use App\Http\Controllers\DevController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/dev', DevController::class);
 
 Route::get('/clear', function () {
     \Illuminate\Support\Facades\Artisan::call('optimize:clear');
