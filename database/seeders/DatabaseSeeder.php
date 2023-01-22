@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             NotificationTemplatesTableSeeder::class,
             PagesTableSeeder::class,
             UserSeeder::class,
+            TradeGroupSeeder::class,
         ]);
     }
 }

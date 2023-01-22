@@ -56,6 +56,7 @@ class TradeAccountService
                     'is_ib' => $isIB
                 ]);
         } catch (\Throwable $th) {
+            throw $th;
             return null;
         }
     }

@@ -33,6 +33,10 @@ class User extends Authenticatable
         'ver_code_send_at' => 'datetime'
     ];
 
+    public function getNameAttribute()
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
 
     public function loginLogs()
     {
@@ -126,5 +130,10 @@ class User extends Authenticatable
     public function scopePaid($query)
     {
         $query->where('plan_id', '!=', 0);
+    }
+
+    public function tradeAccounts()
+    {
+        return $this->hasMany(TradeAccount::class);
     }
 }
